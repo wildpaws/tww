@@ -120,10 +120,10 @@ BOOL dMinigame_Starter_c::deleteCheck() {
 /* 80206360-802064DC       .text setScreen__23dDlst_StarterScrnDraw_cFPCcP10JKRArchive */
 void dDlst_StarterScrnDraw_c::setScreen(const char* param_1, JKRArchive* param_2) {
     /* Apparent match, .data offsets */
-    static int label_t[] = {
-        0x00676F67,
-	    0x00676F6F,
-	    0x676F6578
+    static u32 label_t[] = {
+        'gog',
+	    'goo',
+	    'goex'
     };
     field_0x004 = new J2DScreen();
     field_0x004->set(param_1, param_2);
@@ -131,15 +131,15 @@ void dDlst_StarterScrnDraw_c::setScreen(const char* param_1, JKRArchive* param_2
         fopMsgM_setPaneData(&field_0x008[i], field_0x004, label_t[i]);
     }
 
-    fopMsgM_setPaneData(&field_0x190, field_0x004, 0x646D676F);
+    fopMsgM_setPaneData(&field_0x190, field_0x004, 'dmgo');
 
-    fopMsgM_setPaneData(&field_0x1C8[0], field_0x004, 0x676F31);
-    fopMsgM_setPaneData(&field_0x1C8[1], field_0x004, 0x676F32);
-    fopMsgM_setPaneData(&field_0x1C8[2], field_0x004, 0x676F33);
+    fopMsgM_setPaneData(&field_0x1C8[0], field_0x004, 'go1');
+    fopMsgM_setPaneData(&field_0x1C8[1], field_0x004, 'go2');
+    fopMsgM_setPaneData(&field_0x1C8[2], field_0x004, 'go3');
     
-    fopMsgM_setPaneData(&field_0x270[0], field_0x004, 0x676F3132);
-    fopMsgM_setPaneData(&field_0x270[1], field_0x004, 0x676F3232);
-    fopMsgM_setPaneData(&field_0x270[2], field_0x004, 0x676F3332);
+    fopMsgM_setPaneData(&field_0x270[0], field_0x004, 'go12');
+    fopMsgM_setPaneData(&field_0x270[1], field_0x004, 'go22');
+    fopMsgM_setPaneData(&field_0x270[2], field_0x004, 'go32');
 }
 
 /* 802064DC-80206908       .text anime1__23dDlst_StarterScrnDraw_cFi */
