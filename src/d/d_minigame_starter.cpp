@@ -23,7 +23,29 @@ static s16 cdFrame8 = 0x0006;
 
 /* 80205FE8-80206124       .text _create__19dMinigame_Starter_cFv */
 cPhs_State dMinigame_Starter_c::_create() {
-    /* Nonmatching */
+    cPhs_State result = dComIfG_resLoad(&field_0x100, "Mgst");
+    if (result == cPhs_COMPLEATE_e) {
+        dRes_info_c* resInfo = dComIfG_getObjectResInfo("Mgst");
+        JUT_ASSERT(86, resInfo != NULL);
+        field_0x108 = mDoExt_createSolidHeapFromGameToCurrent(0x14C0, 0x20);
+
+        if (field_0x108) {
+            field_0x0FC = new dDlst_StarterScrnDraw_c();
+            field_0x0FC->setScreen("ship_race1.blo", resInfo->getArchive());
+            mDoExt_restoreCurrentHeap();
+            mDoExt_adjustSolidHeap(field_0x108);
+        } else {
+            return cPhs_ERROR_e;
+        }
+    } else {
+        return result;
+    }
+
+    field_0x111 = false;
+    field_0x10C = 0;
+    field_0x10E = 3;
+
+    return cPhs_COMPLEATE_e;
 }
 
 /* 80206124-8020629C       .text _execute__19dMinigame_Starter_cFv */
