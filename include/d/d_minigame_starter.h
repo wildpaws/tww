@@ -22,8 +22,9 @@ public:
     void draw();
 public:
     /* 0x004 */ J2DScreen* field_0x004;
-    /* 0x008 */ fopMsgM_pane_class field_0x008;
-    /* 0x040 */ u8 field_0x040[0x1C8 - 0x040];
+    /* 0x008 */ fopMsgM_pane_class field_0x008[3];
+    /* 0x0B0 */ u8 field_0x0B0[0x190 - 0x0B0];
+    /* 0x190 */ fopMsgM_pane_class field_0x190;
     /* 0x1C8 */ fopMsgM_pane_class field_0x1C8[3];
     /* 0x270 */ fopMsgM_pane_class field_0x270[3];
 };  // Size: 0x318
