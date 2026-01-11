@@ -24,8 +24,8 @@ public:
 
 class dMinigame_Starter_c : public msg_class {
 public:
-    void countStart() { if (!field_0x111) field_0x111 = true; }
-    
+    void countStart() { if (field_0x111 == 0) field_0x111 = 1; }
+
     cPhs_State _create();
     BOOL _execute();
     BOOL _draw();
@@ -39,7 +39,7 @@ public:
     /* 0x10C */ s16 field_0x10C;
     /* 0x10E */ s16 field_0x10E;
     /* 0x110 */ u8 field_0x110[0x111 - 0x110];
-    /* 0x111 */ bool field_0x111;
+    /* 0x111 */ u8 field_0x111;
     /* 0x112 */ u8 field_0x112[0x114 - 0x112];
 };  // Size: 0x114
 

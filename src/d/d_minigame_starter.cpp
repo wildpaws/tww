@@ -50,27 +50,68 @@ cPhs_State dMinigame_Starter_c::_create() {
 
 /* 80206124-8020629C       .text _execute__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_execute() {
-    /* Nonmatching */
+    /* Nonmatching, regalloc */
+    s32 temp_r29;    
+    s32 temp_r30;
+    
+    temp_r30 = cdFrame0 + cdFrame1 + tmFrame + cdFrame2 + cdFrame3 - 0x1E;
+    temp_r29 = cdFrame4 + cdFrame5 + cdFrame6 + cdFrame7 + cdFrame8 - 0x17;
+
+    if (field_0x111 == 0) {
+        return FALSE;
+    }
+
+    if (field_0x10C < temp_r30 * 3 + temp_r29 + 0x89) {
+        field_0x10C = field_0x10C + 1;
+        if (field_0x10C >= temp_r30 * 3 + temp_r29 + 0x59) {
+            field_0x111 = 2;
+        }
+    } else {
+        field_0x111 = 3;
+    }
+
+    if (field_0x10C <= temp_r30 + 0x1E) {
+        field_0x0FC->anime1(2);
+    }
+
+    if (field_0x10C >= (temp_r30 + 0x1C) && field_0x10C <= (temp_r30 * 2) + 0x39) {
+        field_0x0FC->anime1(1);
+    }
+
+    if (field_0x10C >= (temp_r30 * 2) + 0x37 && field_0x10C <= (temp_r30 * 3 + 0x54)) {
+        field_0x0FC->anime1(0);
+    }
+    
+    if (field_0x10C >= temp_r30 * 3 + 0x54 && field_0x10C <= (temp_r30 * 3 + temp_r29 + 0x6B)) {
+        field_0x0FC->anime2();
+    }
+
+    return TRUE;
 }
 
 /* 8020629C-802062DC       .text _draw__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_draw() {
-    /* Nonmatching */
+    dComIfGd_set2DOpa(field_0x0FC);
+    return TRUE;
 }
 
 /* 802062DC-80206328       .text _delete__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_delete() {
-    /* Nonmatching */
+    if (field_0x108) {
+        mDoExt_destroySolidHeap(field_0x108);
+    }
+    dComIfG_resDelete(&field_0x100, "Mgst");
+    return TRUE;
 }
 
 /* 80206328-8020634C       .text startCheck__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::startCheck() {
-    /* Nonmatching */
+    return field_0x111 == 3 || field_0x111 == 2;
 }
 
 /* 8020634C-80206360       .text deleteCheck__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::deleteCheck() {
-    /* Nonmatching */
+    return field_0x111 == 3;
 }
 
 /* 80206360-802064DC       .text setScreen__23dDlst_StarterScrnDraw_cFPCcP10JKRArchive */
