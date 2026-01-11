@@ -4,7 +4,9 @@
 #include "d/d_drawlist.h"
 #include "dolphin/types.h"
 #include "f_op/f_op_msg.h"
+#include "f_op/f_op_msg_mng.h"
 
+class J2DScreen;
 class JKRArchive;
 struct fopMsgM_pane_class;
 
@@ -19,8 +21,12 @@ public:
     void setRotate(fopMsgM_pane_class*, f32);
     void draw();
 public:
-    u8 padding[0x314];
-};
+    /* 0x004 */ J2DScreen* field_0x004;
+    /* 0x008 */ fopMsgM_pane_class field_0x008;
+    /* 0x040 */ u8 field_0x040[0x1C8 - 0x040];
+    /* 0x1C8 */ fopMsgM_pane_class field_0x1C8[3];
+    /* 0x270 */ fopMsgM_pane_class field_0x270[3];
+};  // Size: 0x318
 
 class dMinigame_Starter_c : public msg_class {
 public:

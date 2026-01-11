@@ -5,6 +5,7 @@
 
 #include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_minigame_starter.h"
+#include "JSystem/J2DGraph/J2DOrthoGraph.h"
 #include "d/d_priority.h"
 #include "d/d_procname.h"
 #include "f_op/f_op_msg.h"
@@ -20,6 +21,8 @@ static s16 cdFrame5 = 0x0003;
 static s16 cdFrame6 = 0x0004;
 static s16 cdFrame7 = 0x0004;
 static s16 cdFrame8 = 0x0006;
+
+static s16 dMinigame_Starter_tex_number = 0x0003;
 
 /* 80205FE8-80206124       .text _create__19dMinigame_Starter_cFv */
 cPhs_State dMinigame_Starter_c::_create() {
@@ -74,15 +77,15 @@ BOOL dMinigame_Starter_c::_execute() {
         field_0x0FC->anime1(2);
     }
 
-    if (field_0x10C >= (temp_r30 + 0x1C) && field_0x10C <= (temp_r30 * 2) + 0x39) {
+    if (field_0x10C >= temp_r30 + 0x1C && field_0x10C <= temp_r30 * 2 + 0x39) {
         field_0x0FC->anime1(1);
     }
 
-    if (field_0x10C >= (temp_r30 * 2) + 0x37 && field_0x10C <= (temp_r30 * 3 + 0x54)) {
+    if (field_0x10C >= temp_r30 * 2 + 0x37 && field_0x10C <= temp_r30 * 3 + 0x54) {
         field_0x0FC->anime1(0);
     }
     
-    if (field_0x10C >= temp_r30 * 3 + 0x54 && field_0x10C <= (temp_r30 * 3 + temp_r29 + 0x6B)) {
+    if (field_0x10C >= temp_r30 * 3 + 0x54 && field_0x10C <= temp_r30 * 3 + temp_r29 + 0x6B) {
         field_0x0FC->anime2();
     }
 
@@ -142,6 +145,14 @@ void dDlst_StarterScrnDraw_c::setRotate(fopMsgM_pane_class*, f32) {
 /* 80206E44-80206EDC       .text draw__23dDlst_StarterScrnDraw_cFv */
 void dDlst_StarterScrnDraw_c::draw() {
     /* Nonmatching */
+    fopMsgM_setAlpha(&field_0x008);
+    for (int i = 0; i < ARRAY_SSIZE(field_0x1C8); i++) {
+        fopMsgM_setAlpha(&field_0x1C8[i]);
+        fopMsgM_setAlpha(&field_0x270[i]);
+    }
+    J2DOrthoGraph* graf_p = dComIfGp_getCurrentGrafPort();
+    graf_p->setPort();
+    field_0x004->draw(0.0f, 0.0f, graf_p);
 }
 
 /* 80206EDC-80206EFC       .text dMinigame_Starter_Draw__FP19dMinigame_Starter_c */
