@@ -54,18 +54,15 @@ cPhs_State dMinigame_Starter_c::_create() {
 /* 80206124-8020629C       .text _execute__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_execute() {
     // TODO: Resolve fake matches in this function
-    s32 temp_r30;
-    s32 temp_r29;   
-    
-    temp_r30 = cdFrame0 + cdFrame1 + tmFrame + cdFrame2 + cdFrame3 - 0x1E;
-    temp_r29 = cdFrame4 + cdFrame5 + cdFrame6 + cdFrame7 + cdFrame8 - 0x17;
+    s32 temp_r30 = cdFrame0 + cdFrame1 + tmFrame + cdFrame2 + cdFrame3 - 0x1E;
+    s32 temp_r29 = cdFrame4 + cdFrame5 + cdFrame6 + cdFrame7 + cdFrame8 - 0x17;
 
     if (field_0x111 == 0) {
         return FALSE;
     }
 
     if (field_0x10C < fake(temp_r29, temp_r30 * 3 + 0x89)) {
-        field_0x10C = field_0x10C + 1;
+        field_0x10C++;
         if (field_0x10C >= fake(temp_r30 * 3 + 0x59, temp_r29)) {
             field_0x111 = 2;
         }
@@ -143,8 +140,62 @@ void dDlst_StarterScrnDraw_c::setScreen(const char* param_1, JKRArchive* param_2
 }
 
 /* 802064DC-80206908       .text anime1__23dDlst_StarterScrnDraw_cFi */
-void dDlst_StarterScrnDraw_c::anime1(int) {
-    /* Nonmatching */
+bool dDlst_StarterScrnDraw_c::anime1(int param_1) {
+    /* Nonmatching, regalloc */
+    s16 frame_acc_1;
+    s16 frame_acc_0;
+    bool result;
+    s16 frame_acc_t;
+    s16 frame_acc_2;
+    s16 frame_acc_3;
+
+    f32 var_f1 = -8.0f;
+    result = false;
+    
+    frame_acc_0 = cdFrame0;
+    frame_acc_1 = frame_acc_0 + cdFrame1;
+    frame_acc_t = frame_acc_1 + tmFrame;
+    frame_acc_2 = frame_acc_t + cdFrame2;
+    frame_acc_3 = frame_acc_2 + cdFrame3;
+
+    field_0x1C8[param_1].mUserArea++;
+    if (field_0x1C8[param_1].mUserArea <= frame_acc_0) {
+        fopMsgM_paneScaleXY(
+            &field_0x270[param_1], 
+            acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f + 0.7f
+        );
+        fopMsgM_setNowAlpha(
+            &field_0x270[param_1], 
+            acc(frame_acc_0, field_0x1C8[param_1].mUserArea, 0)
+        );
+    } else if (field_0x1C8[param_1].mUserArea <= frame_acc_1) {
+        f32 y = acc(frame_acc_1, field_0x1C8[param_1].mUserArea, frame_acc_0);
+        fopMsgM_paneScaleXY(&field_0x1C8[param_1], y * 0.3f + 0.7f);
+        fopMsgM_setNowAlpha(&field_0x1C8[param_1], y);
+        fopMsgM_paneScaleXY(
+            &field_0x270[param_1], 
+            acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f + 0.7f
+        );
+        fopMsgM_setNowAlpha(&field_0x270[param_1], 1.0f - y);
+        if (field_0x1C8[param_1].mUserArea == frame_acc_0) {
+            mDoAud_seStart(JA_SE_SGAME_COUNTDOWN);
+        }
+    } else if (field_0x1C8[param_1].mUserArea > frame_acc_t) {
+        if (field_0x1C8[param_1].mUserArea <= frame_acc_2) {
+            if (((field_0x1C8[param_1].mUserArea - frame_acc_t) / ((frame_acc_2 - frame_acc_t) / 4)) % 2 != 0) {
+                var_f1 *= -1.0f;
+            }
+            setRotate(&field_0x1C8[param_1], var_f1);
+        } else if (field_0x1C8[param_1].mUserArea < frame_acc_3) {
+            fopMsgM_paneScaleXY(&field_0x1C8[param_1], 1.0f + 2.0f * acc(frame_acc_3, field_0x1C8[param_1].mUserArea, frame_acc_2));
+            fopMsgM_setNowAlpha(&field_0x1C8[param_1], 1.0f - acc(frame_acc_3, field_0x1C8[param_1].mUserArea, frame_acc_2));
+        } else {
+            fopMsgM_paneScaleXY(&field_0x1C8[param_1], 3.0f);
+            fopMsgM_setNowAlphaZero(&field_0x1C8[param_1]);
+            result = true;
+        }
+    }
+    return result;
 }
 
 /* 80206908-80206CB0       .text anime2__23dDlst_StarterScrnDraw_cFv */
@@ -153,13 +204,33 @@ void dDlst_StarterScrnDraw_c::anime2() {
 }
 
 /* 80206CB0-80206DA4       .text scaleAnime__23dDlst_StarterScrnDraw_cFf */
-void dDlst_StarterScrnDraw_c::scaleAnime(f32) {
-    /* Nonmatching */
+void dDlst_StarterScrnDraw_c::scaleAnime(f32 param_1) {
+    field_0x190.mSize.x = field_0x190.mSizeOrig.x * param_1;
+    field_0x190.mSize.y = field_0x190.mSizeOrig.y * param_1;
+    
+    for (int i = 0; i < dMinigame_Starter_tex_number; i++) {
+        field_0x008[i].mSize.x = field_0x008[i].mSizeOrig.x * param_1;
+        field_0x008[i].mSize.y = field_0x008[i].mSizeOrig.y * param_1;
+    }
+
+    field_0x190.mPosCenter = field_0x190.mPosCenterOrig;
+    fopMsgM_cposMove(&field_0x190);
+
+    for (int i = 0; i < dMinigame_Starter_tex_number; i++) {
+        field_0x008[i].mPosCenter.x = field_0x008[i].mPosCenterOrig.x * param_1;
+        field_0x008[i].mPosCenter.y = field_0x008[i].mPosCenterOrig.y * param_1;
+        fopMsgM_cposMove(&field_0x008[i]);
+    }
 }
 
 /* 80206DA4-80206E44       .text setRotate__23dDlst_StarterScrnDraw_cFP18fopMsgM_pane_classf */
-void dDlst_StarterScrnDraw_c::setRotate(fopMsgM_pane_class*, f32) {
-    /* Nonmatching */
+void dDlst_StarterScrnDraw_c::setRotate(fopMsgM_pane_class* param_1, f32 param_2) {
+    param_1->pane->rotate(
+        (s32)(param_1->mSize.x / 2), 
+        (s32)(param_1->mSize.y / 2), 
+        ROTATE_Z, 
+        param_2
+    );
 }
 
 /* 80206E44-80206EDC       .text draw__23dDlst_StarterScrnDraw_cFv */
