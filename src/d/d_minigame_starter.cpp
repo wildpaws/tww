@@ -53,9 +53,9 @@ cPhs_State dMinigame_Starter_c::_create() {
 
 /* 80206124-8020629C       .text _execute__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_execute() {
-    /* Nonmatching, regalloc */
-    s32 temp_r29;    
+    // TODO: Resolve fake matches in this function
     s32 temp_r30;
+    s32 temp_r29;   
     
     temp_r30 = cdFrame0 + cdFrame1 + tmFrame + cdFrame2 + cdFrame3 - 0x1E;
     temp_r29 = cdFrame4 + cdFrame5 + cdFrame6 + cdFrame7 + cdFrame8 - 0x17;
@@ -64,28 +64,28 @@ BOOL dMinigame_Starter_c::_execute() {
         return FALSE;
     }
 
-    if (field_0x10C < temp_r30 * 3 + temp_r29 + 0x89) {
+    if (field_0x10C < fake(temp_r29, temp_r30 * 3 + 0x89)) {
         field_0x10C = field_0x10C + 1;
-        if (field_0x10C >= temp_r30 * 3 + temp_r29 + 0x59) {
+        if (field_0x10C >= fake(temp_r30 * 3 + 0x59, temp_r29)) {
             field_0x111 = 2;
         }
     } else {
         field_0x111 = 3;
     }
 
-    if (field_0x10C <= temp_r30 + 0x1E) {
+    if (field_0x10C <= fake(temp_r30, 0x1E)) {
         field_0x0FC->anime1(2);
     }
 
-    if (field_0x10C >= temp_r30 + 0x1C && field_0x10C <= temp_r30 * 2 + 0x39) {
+    if (field_0x10C >= fake(temp_r30, 0x1C) && field_0x10C <= fake(temp_r30 * 2, 0x39)) {
         field_0x0FC->anime1(1);
     }
 
-    if (field_0x10C >= temp_r30 * 2 + 0x37 && field_0x10C <= temp_r30 * 3 + 0x54) {
+    if (field_0x10C >= fake(temp_r30 * 2, 0x37) && field_0x10C <= fake(temp_r30 * 3, 0x54)) {
         field_0x0FC->anime1(0);
     }
     
-    if (field_0x10C >= temp_r30 * 3 + 0x54 && field_0x10C <= temp_r30 * 3 + temp_r29 + 0x6B) {
+    if (field_0x10C >= fake(temp_r30 * 3, 0x54) && field_0x10C <= fake(temp_r30 * 3 + 0x6B, temp_r29)) {
         field_0x0FC->anime2();
     }
 

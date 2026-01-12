@@ -12,7 +12,7 @@ struct fopMsgM_pane_class;
 
 class dDlst_StarterScrnDraw_c : public dDlst_base_c {
 public:
-    void acc(s16, s16, s16) {}
+    void acc(s16, s16, s16) { }
     
     void setScreen(const char*, JKRArchive*);
     void anime1(int);
@@ -32,6 +32,8 @@ public:
 class dMinigame_Starter_c : public msg_class {
 public:
     void countStart() { if (field_0x111 == 0) field_0x111 = 1; }
+    s32 fake2(s32 param_1, s32 mult) { return param_1 * mult; }
+    s32 fake(s32 param_1, s32 param_2) { return param_1 + param_2;  }
 
     cPhs_State _create();
     BOOL _execute();
