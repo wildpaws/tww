@@ -16,9 +16,13 @@ public:
         return ((f32)(param_1 - param_2) * (f32)(param_1 - param_2)) / ((f32)(param_0 - param_2) * (f32)(param_0 - param_2));
     }
     
+    f32 acc2(f32 param_1, f32 constant, f32 factor) {
+        return constant - (factor * param_1);    
+    }    
+
     void setScreen(const char*, JKRArchive*);
-    bool anime1(int);
-    void anime2();
+    BOOL anime1(int);
+    BOOL anime2();
     void scaleAnime(f32);
     void setRotate(fopMsgM_pane_class*, f32);
     virtual void draw();
@@ -35,7 +39,7 @@ public:
 class dMinigame_Starter_c : public msg_class {
 public:
     void countStart() { if (field_0x111 == 0) field_0x111 = 1; }
-    s32 fake(s32 param_1, s32 param_2) { return param_1 + param_2;  }
+    s32 fake(s32 param_1, s32 mult, s32 off) { return param_1 * mult + off; }
 
     cPhs_State _create();
     BOOL _execute();

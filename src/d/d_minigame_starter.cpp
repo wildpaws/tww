@@ -6,6 +6,7 @@
 #include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_minigame_starter.h"
 #include "JSystem/J2DGraph/J2DOrthoGraph.h"
+#include "d/d_meter.h"
 #include "d/d_priority.h"
 #include "d/d_procname.h"
 #include "f_op/f_op_msg.h"
@@ -44,7 +45,7 @@ cPhs_State dMinigame_Starter_c::_create() {
         return result;
     }
 
-    field_0x111 = false;
+    field_0x111 = 0;
     field_0x10C = 0;
     field_0x10E = 3;
 
@@ -53,7 +54,6 @@ cPhs_State dMinigame_Starter_c::_create() {
 
 /* 80206124-8020629C       .text _execute__19dMinigame_Starter_cFv */
 BOOL dMinigame_Starter_c::_execute() {
-    // TODO: Resolve fake matches in this function
     s32 temp_r30 = cdFrame0 + cdFrame1 + tmFrame + cdFrame2 + cdFrame3 - 0x1E;
     s32 temp_r29 = cdFrame4 + cdFrame5 + cdFrame6 + cdFrame7 + cdFrame8 - 0x17;
 
@@ -61,28 +61,28 @@ BOOL dMinigame_Starter_c::_execute() {
         return FALSE;
     }
 
-    if (field_0x10C < fake(temp_r29, temp_r30 * 3 + 0x89)) {
+    if (field_0x10C < temp_r29 + fake(temp_r30, 3, 0x89)) {
         field_0x10C++;
-        if (field_0x10C >= fake(temp_r30 * 3 + 0x59, temp_r29)) {
+        if (field_0x10C >= temp_r29 + fake(temp_r30, 3, 0x59)) {
             field_0x111 = 2;
         }
     } else {
         field_0x111 = 3;
     }
 
-    if (field_0x10C <= fake(temp_r30, 0x1E)) {
+    if (field_0x10C <= temp_r30 + 0x1E) {
         field_0x0FC->anime1(2);
     }
 
-    if (field_0x10C >= fake(temp_r30, 0x1C) && field_0x10C <= fake(temp_r30 * 2, 0x39)) {
+    if (field_0x10C >= temp_r30 + 0x1C && field_0x10C <= fake(temp_r30, 2, 0x39)) {
         field_0x0FC->anime1(1);
     }
 
-    if (field_0x10C >= fake(temp_r30 * 2, 0x37) && field_0x10C <= fake(temp_r30 * 3, 0x54)) {
+    if (field_0x10C >= fake(temp_r30, 2, 0x37) && field_0x10C <= fake(temp_r30, 3, 0x54)) {
         field_0x0FC->anime1(0);
     }
     
-    if (field_0x10C >= fake(temp_r30 * 3, 0x54) && field_0x10C <= fake(temp_r30 * 3 + 0x6B, temp_r29)) {
+    if (field_0x10C >= fake(temp_r30, 3, 0x54) && field_0x10C <= temp_r29 + fake(temp_r30, 3, 0x6B)) {
         field_0x0FC->anime2();
     }
 
@@ -116,12 +116,12 @@ BOOL dMinigame_Starter_c::deleteCheck() {
 
 /* 80206360-802064DC       .text setScreen__23dDlst_StarterScrnDraw_cFPCcP10JKRArchive */
 void dDlst_StarterScrnDraw_c::setScreen(const char* param_1, JKRArchive* param_2) {
-    /* Apparent match, .data offsets */
     static u32 label_t[] = {
         'gog',
 	    'goo',
 	    'goex'
     };
+
     field_0x004 = new J2DScreen();
     field_0x004->set(param_1, param_2);
     for (int i = 0; i < dMinigame_Starter_tex_number; i++) {
@@ -140,17 +140,17 @@ void dDlst_StarterScrnDraw_c::setScreen(const char* param_1, JKRArchive* param_2
 }
 
 /* 802064DC-80206908       .text anime1__23dDlst_StarterScrnDraw_cFi */
-bool dDlst_StarterScrnDraw_c::anime1(int param_1) {
+BOOL dDlst_StarterScrnDraw_c::anime1(int param_1) {
     /* Nonmatching, regalloc */
     s16 frame_acc_1;
     s16 frame_acc_0;
-    bool result;
+    BOOL result;
     s16 frame_acc_t;
     s16 frame_acc_2;
     s16 frame_acc_3;
 
     f32 var_f1 = -8.0f;
-    result = false;
+    result = FALSE;
     
     frame_acc_0 = cdFrame0;
     frame_acc_1 = frame_acc_0 + cdFrame1;
@@ -162,7 +162,7 @@ bool dDlst_StarterScrnDraw_c::anime1(int param_1) {
     if (field_0x1C8[param_1].mUserArea <= frame_acc_0) {
         fopMsgM_paneScaleXY(
             &field_0x270[param_1], 
-            acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f + 0.7f
+            0.7f + acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f
         );
         fopMsgM_setNowAlpha(
             &field_0x270[param_1], 
@@ -174,7 +174,7 @@ bool dDlst_StarterScrnDraw_c::anime1(int param_1) {
         fopMsgM_setNowAlpha(&field_0x1C8[param_1], y);
         fopMsgM_paneScaleXY(
             &field_0x270[param_1], 
-            acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f + 0.7f
+            0.7f + acc(frame_acc_1, field_0x1C8[param_1].mUserArea, 0) * 0.3f
         );
         fopMsgM_setNowAlpha(&field_0x270[param_1], 1.0f - y);
         if (field_0x1C8[param_1].mUserArea == frame_acc_0) {
@@ -192,15 +192,64 @@ bool dDlst_StarterScrnDraw_c::anime1(int param_1) {
         } else {
             fopMsgM_paneScaleXY(&field_0x1C8[param_1], 3.0f);
             fopMsgM_setNowAlphaZero(&field_0x1C8[param_1]);
-            result = true;
+            result = TRUE;
         }
     }
+
     return result;
 }
 
 /* 80206908-80206CB0       .text anime2__23dDlst_StarterScrnDraw_cFv */
-void dDlst_StarterScrnDraw_c::anime2() {
-    /* Nonmatching */
+BOOL dDlst_StarterScrnDraw_c::anime2() {
+    BOOL var_r31;
+
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 temp_f2;
+    f32 temp_f1;
+
+    var_r31 = FALSE;
+    s16 var_r8 = cdFrame4;
+    s16 temp_r0 = cdFrame4 + cdFrame5;
+    s16 temp_r0_2 = temp_r0 + cdFrame6;
+    s16 temp_r0_3 = temp_r0_2 + cdFrame7;
+    s16 temp_r0_4 = temp_r0_3 + cdFrame8;
+    
+    field_0x008[0].mUserArea++;
+    if (field_0x008[0].mUserArea <= var_r8) {
+        temp_f31 = acc(var_r8, field_0x008[0].mUserArea, 0);
+        temp_f2 = acc2(temp_f31, 3.0f, 2.2f);
+        temp_f30 = acc2(temp_f31, 90.0f, 65.0f);
+
+        scaleAnime(temp_f2 * g_menuHIO.field_0x14);
+        setRotate(&field_0x190, temp_f30);
+        fopMsgM_setNowAlpha(field_0x008, temp_f31);
+    } else if (field_0x008[0].mUserArea <= temp_r0) {
+        temp_f2 = acc(temp_r0, field_0x008[0].mUserArea, var_r8);
+        temp_f1 = acc2(temp_f2, 0.8f, -0.19999999f);
+        scaleAnime(temp_f1 * g_menuHIO.field_0x14);
+        if (field_0x008[0].mUserArea == temp_r0) {
+            mDoAud_seStart(JA_SE_SGAME_COUNT_GO);
+        }
+    } else if (field_0x008[0].mUserArea > temp_r0_2) {
+        if (field_0x008[0].mUserArea <= temp_r0_3) {
+            setRotate(&field_0x190, acc2(acc(temp_r0_3, field_0x008[0].mUserArea, temp_r0_2), 25.0f, -35.0f));
+        } else if (field_0x008[0].mUserArea < temp_r0_4) {
+            temp_f31 = acc(temp_r0_4, field_0x008[0].mUserArea, temp_r0_3);
+            temp_f2 = acc2(temp_f31, 1.0f, 0.5f);
+            temp_f30 = acc2(temp_f31, 60.0f, -210.0f);
+
+            scaleAnime(temp_f2 * g_menuHIO.field_0x14);
+            setRotate(&field_0x190, temp_f30);
+            fopMsgM_setNowAlpha(field_0x008, 1.0f - temp_f31);
+        } else {
+            scaleAnime(0.5f * g_menuHIO.field_0x14);
+            setRotate(&field_0x190, -90.0f);
+            fopMsgM_setNowAlphaZero(field_0x008);
+            var_r31 = TRUE;
+        }
+    }
+    return var_r31;
 }
 
 /* 80206CB0-80206DA4       .text scaleAnime__23dDlst_StarterScrnDraw_cFf */
