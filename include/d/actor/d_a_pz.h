@@ -5,6 +5,7 @@
 #include "d/d_npc.h"
 #include "c/c_damagereaction.h"
 #include "SSystem/SComponent/c_phase.h"
+#include "m_Do/m_Do_hostIO.h"
 
 class daPz_matAnm_c {
     void clrMoveFlag() {}
@@ -37,7 +38,7 @@ public:
     void _nodeSkirtControl(J3DNode*, J3DModel*);
     void bodyCreateHeap();
     void bowCreateHeap();
-    void _createHeap();
+    BOOL _createHeap();
     void getGndPos();
     void checkEyeArea(cXyz&);
     virtual u32 getMsg();
@@ -96,6 +97,8 @@ public:
     cPhs_State _create();
     bool _delete();
 
+    static const u32 m_heapsize;
+    static const char m_arc_name[];
     static const dCcD_SrcCyl m_cyl_src;
 
 public:
@@ -137,21 +140,98 @@ public:
     /* 0x0F82 */ u8 m0F82;
     /* 0x0F83 */ u8 m0F83[0x0F84 - 0x0F83];
     /* 0x0F84 */ int mArg;
-    /* 0x0F88 */ u8 m0F88;
+    /* 0x0F88 */ u8 mDrawBowFlag;
     /* 0x0F89 */ u8 m0F89[0x0F8C - 0x0F89];
     /* 0x0F8C */ mDoExt_McaMorf* mpBowMcaMorf;
     /* 0x0F90 */ mDoExt_brkAnm mBrkAnm;
     /* 0x0FA8 */ mDoExt_btkAnm mBtkAnm;
     /* 0x0FBC */ mDoExt_btpAnm mBtpAnm;
-    /* 0x0FD0 */ u8 m0FD0[0x1049 - 0x0FD0];
-};
+    /* 0x0FD0 */ u8 m0FD0[0x1094 - 0x0FD0];
+}; // Size: 0x1094
 
-class daPz_HIO_c {
+class daPz_HIO_c : public mDoHIO_entry_c {
 public:
     daPz_HIO_c();
 
 public:
-    /* Place member variables here */
-};
+    /* 0x004 */ dNpc_HIO_c field_0x004;
+    /* 0x02C */ u8 field_0x02C;
+    /* 0x02D */ u8 field_0x02D;
+    /* 0x02E */ u8 field_0x02E[0x02F - 0x02E];
+    /* 0x02F */ u8 field_0x02F;
+    /* 0x030 */ u8 field_0x030[0x031 - 0x030];
+    /* 0x031 */ u8 field_0x031;
+    /* 0x032 */ u8 field_0x032;
+    /* 0x033 */ u8 field_0x033;
+    /* 0x034 */ u8 field_0x034[10];
+    /* 0x03E */ u8 field_0x03E[0x040 - 0x03E];
+    /* 0x040 */ f32 field_0x040;
+    /* 0x044 */ f32 field_0x044;
+    /* 0x048 */ f32 field_0x048;
+    /* 0x04C */ f32 field_0x04C;
+    /* 0x050 */ f32 field_0x050;
+    /* 0x054 */ s16 field_0x054;
+    /* 0x056 */ u8 field_0x056[0x058 - 0x056];
+    /* 0x058 */ f32 field_0x058;
+    /* 0x05C */ f32 field_0x05C;
+    /* 0x060 */ u8 field_0x060[0x064 - 0x060];
+    /* 0x064 */ f32 field_0x064;
+    /* 0x068 */ f32 field_0x068;
+    /* 0x06C */ u8 field_0x06C[0x070 - 0x06C];
+    /* 0x070 */ f32 field_0x070;
+    /* 0x074 */ f32 field_0x074;
+    /* 0x078 */ u8 field_0x078[0x07C - 0x078];
+    /* 0x07C */ f32 field_0x07C;
+    /* 0x080 */ s16 field_0x080;
+    /* 0x082 */ u8 field_0x082[0x084 - 0x082];
+    /* 0x084 */ s16 field_0x084;
+    /* 0x086 */ s16 field_0x086;
+    /* 0x088 */ u8 field_0x088[0x08A - 0x088];
+    /* 0x08A */ s16 field_0x08A;
+    /* 0x08C */ s16 field_0x08C;
+    /* 0x08E */ u8 field_0x08E[0x090 - 0x08E];
+    /* 0x090 */ s16 field_0x090;
+    /* 0x092 */ s16 field_0x092;
+    /* 0x094 */ u8 field_0x094[0x096 - 0x094];
+    /* 0x096 */ s16 field_0x096;
+    /* 0x098 */ s16 field_0x098;
+    /* 0x09A */ u8 field_0x09A[0x09C - 0x09A];
+    /* 0x09C */ s16 field_0x09C;
+    /* 0x09E */ u8 field_0x09E[0x0A0 - 0x09E];
+    /* 0x0A0 */ f32 field_0x0A0;
+    /* 0x0A4 */ u8 field_0x0A4[0x0A8 - 0x0A4];
+    /* 0x0A8 */ f32 field_0x0A8;
+    /* 0x0AC */ f32 field_0x0AC;
+    /* 0x0B0 */ f32 field_0x0B0;
+    /* 0x0B4 */ f32 field_0x0B4;
+    /* 0x0B8 */ f32 field_0x0B8;
+    /* 0x0BC */ f32 field_0x0BC;
+    /* 0x0C0 */ f32 field_0x0C0;
+    /* 0x0C4 */ f32 field_0x0C4;
+    /* 0x0C8 */ f32 field_0x0C8;
+    /* 0x0CC */ s16 field_0x0CC;
+    /* 0x0CE */ u8 field_0x0CE[0x0D0 - 0x0CE];
+    /* 0x0D0 */ f32 field_0x0D0;
+    /* 0x0D4 */ f32 field_0x0D4;
+    /* 0x0D8 */ f32 field_0x0D8;
+    /* 0x0DC */ s16 field_0x0DC;
+    /* 0x0DE */ s16 field_0x0DE;
+    /* 0x0E0 */ s16 field_0x0E0;
+    /* 0x0E2 */ s16 field_0x0E2;
+    /* 0x0E4 */ s16 field_0x0E4;
+    /* 0x0E6 */ s16 field_0x0E6;
+    /* 0x0E8 */ s16 field_0x0E8;
+    /* 0x0EA */ u8 field_0x0EA[0x0EC - 0x0EA];
+    /* 0x0EC */ f32 field_0x0EC;
+    /* 0x0F0 */ f32 field_0x0F0;
+    /* 0x0F4 */ f32 field_0x0F4;
+    /* 0x0F8 */ s16 field_0x0F8;
+    /* 0x0FA */ u8 field_0x0FA[0x0FC - 0x0FA];
+    /* 0x0FC */ s16 field_0x0FC;
+    /* 0x0FE */ u8 field_0x0FE[0x100 - 0x0FE];
+    /* 0x100 */ f32 field_0x100;
+    /* 0x104 */ f32 field_0x104;
+    /* 0x108 */ f32 field_0x108;
+};  // Size: 0x10C
 
 #endif /* D_A_PZ_H */

@@ -5,10 +5,14 @@
 
 #include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_pz.h"
+#include "d/d_material.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
+#include "d/d_snap.h"
 
+const u32 daPz_c::m_heapsize = 0xA740;
+const char daPz_c::m_arc_name[] = "PZ";
 const dCcD_SrcCyl daPz_c::m_cyl_src = {
     // dCcD_SrcGObjInf
     {
@@ -39,6 +43,7 @@ const dCcD_SrcCyl daPz_c::m_cyl_src = {
     }},
 };
 
+static daPz_HIO_c l_HIO;
 
 /* 000000EC-00000310       .text __ct__10daPz_HIO_cFv */
 daPz_HIO_c::daPz_HIO_c() {
@@ -51,8 +56,15 @@ static void stealItem_CB(void*) {
 }
 
 /* 00000340-0000038C       .text nodeHeadControl_CB__FP7J3DNodei */
-static BOOL nodeHeadControl_CB(J3DNode*, int) {
-    /* Nonmatching */
+static BOOL nodeHeadControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
+    if (i_calcTiming == J3DNodeCBCalcTiming_In) {
+        J3DModel* model_p = j3dSys.getModel();
+        if (model_p->getUserArea() != 0) {
+            daPz_c* this_p = (daPz_c *) model_p->getUserArea();
+            this_p->_nodeHeadControl(i_nodeP, model_p);
+        }
+    }
+    return TRUE;
 }
 
 /* 0000038C-000004FC       .text _nodeHeadControl__6daPz_cFP7J3DNodeP8J3DModel */
@@ -61,8 +73,15 @@ void daPz_c::_nodeHeadControl(J3DNode*, J3DModel*) {
 }
 
 /* 00000538-00000584       .text nodeWaistControl_CB__FP7J3DNodei */
-static BOOL nodeWaistControl_CB(J3DNode*, int) {
-    /* Nonmatching */
+static BOOL nodeWaistControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
+    if (i_calcTiming == J3DNodeCBCalcTiming_In) {
+        J3DModel* model_p = j3dSys.getModel();
+        if (model_p->getUserArea() != 0) {
+            daPz_c* this_p = (daPz_c *) model_p->getUserArea();
+            this_p->_nodeWaistControl(i_nodeP, model_p);
+        }
+    }
+    return TRUE;
 }
 
 /* 00000584-00000710       .text _nodeWaistControl__6daPz_cFP7J3DNodeP8J3DModel */
@@ -71,8 +90,15 @@ void daPz_c::_nodeWaistControl(J3DNode*, J3DModel*) {
 }
 
 /* 00000710-0000075C       .text nodeWaist2Control_CB__FP7J3DNodei */
-static BOOL nodeWaist2Control_CB(J3DNode*, int) {
-    /* Nonmatching */
+static BOOL nodeWaist2Control_CB(J3DNode* i_nodeP, int i_calcTiming) {
+    if (i_calcTiming == J3DNodeCBCalcTiming_In) {
+        J3DModel* model_p = j3dSys.getModel();
+        if (model_p->getUserArea() != 0) {
+            daPz_c* this_p = (daPz_c *) model_p->getUserArea();
+            this_p->_nodeWaist2Control(i_nodeP, model_p);
+        }
+    }
+    return TRUE;
 }
 
 /* 0000075C-000007F4       .text _nodeWaist2Control__6daPz_cFP7J3DNodeP8J3DModel */
@@ -81,8 +107,15 @@ void daPz_c::_nodeWaist2Control(J3DNode*, J3DModel*) {
 }
 
 /* 000007F4-00000840       .text nodeSkirtControl_CB__FP7J3DNodei */
-static BOOL nodeSkirtControl_CB(J3DNode*, int) {
-    /* Nonmatching */
+static BOOL nodeSkirtControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
+    if (i_calcTiming == J3DNodeCBCalcTiming_In) {
+        J3DModel* model_p = j3dSys.getModel();
+        if (model_p->getUserArea() != 0) {
+            daPz_c* this_p = (daPz_c *) model_p->getUserArea();
+            this_p->_nodeSkirtControl(i_nodeP, model_p);
+        }
+    }
+    return TRUE;
 }
 
 /* 00000840-00000920       .text _nodeSkirtControl__6daPz_cFP7J3DNodeP8J3DModel */
@@ -91,8 +124,9 @@ void daPz_c::_nodeSkirtControl(J3DNode*, J3DModel*) {
 }
 
 /* 00000920-00000940       .text createHeap_CB__FP10fopAc_ac_c */
-static BOOL createHeap_CB(fopAc_ac_c*) {
+static BOOL createHeap_CB(fopAc_ac_c* i_this) {
     /* Nonmatching */
+    return ((daPz_c *)i_this)->_createHeap();
 }
 
 /* 00000940-00000D54       .text bodyCreateHeap__6daPz_cFv */
@@ -106,7 +140,7 @@ void daPz_c::bowCreateHeap() {
 }
 
 /* 00000E74-00000EC0       .text _createHeap__6daPz_cFv */
-void daPz_c::_createHeap() {
+BOOL daPz_c::_createHeap() {
     /* Nonmatching */
 }
 
@@ -382,7 +416,20 @@ void daPz_c::drawShadow() {
 
 /* 000066D8-0000676C       .text _draw__6daPz_cFv */
 bool daPz_c::_draw() {
-    /* Nonmatching */
+    if (mEventIce.mFreezeTimer > 20) {
+        dMat_control_c::mIce->entryDL(mpMorf, -1, &mInvisibleModel);
+    } else {
+        bodyDraw();
+    }
+
+    if (mDrawBowFlag != 0) {
+        bowDraw();
+    }
+
+    drawShadow();
+    dSnap_RegistFig(DSNAP_TYPE_UNK87, this, 1.0f, 1.0f, 1.0f);
+
+    return true;
 }
 
 /* 0000676C-00006974       .text bodyCreateInit__6daPz_cFv */
@@ -392,12 +439,92 @@ void daPz_c::bodyCreateInit() {
 
 /* 00006974-00006BAC       .text createInit__6daPz_cFv */
 void daPz_c::createInit() {
-    /* Nonmatching */
+    max_health = 0x1E;
+    health = max_health;
+    stealItemLeft = 10;
+
+    mEnemyFire.mpMcaMorf = mpMorf;
+    mEnemyFire.mpActor = this;
+
+    static u8 fire_j[10] = { 
+         7,  2, 12, 13, 17, 
+        18, 22, 23, 25, 26 
+    };
+    static f32 fire_sc[10] = { 
+        2.0f, 2.0f, 1.0f, 1.0f, 1.0f, 
+        1.0f, 1.0f, 1.0f, 1.0f, 1.0f 
+    };
+
+    for (int i = 0; i < ARRAY_SSIZE(mEnemyFire.mFlameTimers); i++) {
+        mEnemyFire.mFlameJntIdxs[i] = fire_j[i];
+        mEnemyFire.mParticleScale[i] = fire_sc[i];
+    }
+
+    mEventIce.mpActor = this;
+    mEventIce.m00C = 1;
+    mEventIce.mWallRadius = 50.0f;
+    mEventIce.mCylHeight = 250.0f;
+    
+    m08B0 = 0;
+    m0F7C = l_HIO.field_0x0F8;
+    m0F80 = 0;
+    bodyCreateInit();
+    if (mArg == 0) {
+        mDrawBowFlag = 1;
+        modeProc((Proc_e)0, 1);
+        attention_info.distances[fopAc_Attn_TYPE_TALK_e] = 3;
+        attention_info.distances[fopAc_Attn_TYPE_SPEAK_e] = 3;
+        cLib_onBit<u32>(attention_info.flags, fopAc_Attn_ACTION_SPEAK_e);
+        cLib_onBit<u32>(attention_info.flags, fopAc_Attn_LOCKON_TALK_e);
+    } else {
+        attention_info.flags = fopAc_Attn_LOCKON_TALK_e | fopAc_Attn_ACTION_SPEAK_e;
+        modeProc((Proc_e)0, 0);
+    }
+
+    m0920 = 1;
+    fopAcM_SetMtx(this, mpMorf->getModel()->getBaseTRMtx());
+    fopAcM_setCullSizeBox(this, -60.0f, -50.0f, -60.0f, 60.0f, 1800.0f, 60.0f);
+    mAcchCir.SetWall(80.0f, 60.0f);
+    mObjAcch.Set(
+        fopAcM_GetPosition_p(this), 
+        fopAcM_GetOldPosition_p(this), 
+        this, 1, &mAcchCir, 
+        fopAcM_GetSpeed_p(this)
+    );
+    mObjAcch.SetRoofNone();
+    gravity = l_HIO.field_0x0B0;
+    mStts.Init(255, 255, this);
+    mCyl.Set(m_cyl_src);
+    mCyl.SetStts(&mStts);
+    setCollision(30.0f, 130.0f);
+    dKy_tevstr_init(&mTevstr, fopAcM_GetHomeRoomNo(this), 255);
+    g_env_light.settingTevStruct(TEV_TYPE_ACTOR, &current.pos, &tevStr);
 }
 
 /* 00006BAC-00006CB0       .text _create__6daPz_cFv */
 cPhs_State daPz_c::_create() {
-    /* Nonmatching */
+    cPhs_State state = dComIfG_resLoad(&mPhs, m_arc_name);
+
+    fopAcM_SetupActor(this, daPz_c);
+
+    if (state == cPhs_COMPLEATE_e) {
+        getArg();
+        if (
+            mArg != 0 && 
+            strcmp(dComIfGp_getStartStageName(), "kenroom") == 0 && 
+            dComIfGs_isEventBit(dSv_event_flag_c::UNK_3520) == TRUE
+        ) {
+            return cPhs_ERROR_e;
+        }
+
+        if (!fopAcM_entrySolidHeap(this, createHeap_CB, m_heapsize)) {
+            return cPhs_ERROR_e;
+        }
+
+        createInit();
+    }
+
+    return state;
 }
 
 /* 00007DA0-00007E20       .text _delete__6daPz_cFv */
