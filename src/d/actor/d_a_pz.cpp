@@ -59,7 +59,7 @@ static void stealItem_CB(void*) {
 static BOOL nodeHeadControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
     if (i_calcTiming == J3DNodeCBCalcTiming_In) {
         J3DModel* model_p = j3dSys.getModel();
-        if (model_p->getUserArea() != 0) {
+        if (model_p->getUserArea() != NULL) {
             daPz_c* this_p = (daPz_c *) model_p->getUserArea();
             this_p->_nodeHeadControl(i_nodeP, model_p);
         }
@@ -76,7 +76,7 @@ void daPz_c::_nodeHeadControl(J3DNode*, J3DModel*) {
 static BOOL nodeWaistControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
     if (i_calcTiming == J3DNodeCBCalcTiming_In) {
         J3DModel* model_p = j3dSys.getModel();
-        if (model_p->getUserArea() != 0) {
+        if (model_p->getUserArea() != NULL) {
             daPz_c* this_p = (daPz_c *) model_p->getUserArea();
             this_p->_nodeWaistControl(i_nodeP, model_p);
         }
@@ -93,7 +93,7 @@ void daPz_c::_nodeWaistControl(J3DNode*, J3DModel*) {
 static BOOL nodeWaist2Control_CB(J3DNode* i_nodeP, int i_calcTiming) {
     if (i_calcTiming == J3DNodeCBCalcTiming_In) {
         J3DModel* model_p = j3dSys.getModel();
-        if (model_p->getUserArea() != 0) {
+        if (model_p->getUserArea() != NULL) {
             daPz_c* this_p = (daPz_c *) model_p->getUserArea();
             this_p->_nodeWaist2Control(i_nodeP, model_p);
         }
@@ -110,7 +110,7 @@ void daPz_c::_nodeWaist2Control(J3DNode*, J3DModel*) {
 static BOOL nodeSkirtControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
     if (i_calcTiming == J3DNodeCBCalcTiming_In) {
         J3DModel* model_p = j3dSys.getModel();
-        if (model_p->getUserArea() != 0) {
+        if (model_p->getUserArea() != NULL) {
             daPz_c* this_p = (daPz_c *) model_p->getUserArea();
             this_p->_nodeSkirtControl(i_nodeP, model_p);
         }
@@ -125,23 +125,23 @@ void daPz_c::_nodeSkirtControl(J3DNode*, J3DModel*) {
 
 /* 00000920-00000940       .text createHeap_CB__FP10fopAc_ac_c */
 static BOOL createHeap_CB(fopAc_ac_c* i_this) {
-    /* Nonmatching */
     return ((daPz_c *)i_this)->_createHeap();
 }
 
 /* 00000940-00000D54       .text bodyCreateHeap__6daPz_cFv */
-void daPz_c::bodyCreateHeap() {
+BOOL daPz_c::bodyCreateHeap() {
     /* Nonmatching */
 }
 
 /* 00000D54-00000E74       .text bowCreateHeap__6daPz_cFv */
-void daPz_c::bowCreateHeap() {
+BOOL daPz_c::bowCreateHeap() {
     /* Nonmatching */
 }
 
 /* 00000E74-00000EC0       .text _createHeap__6daPz_cFv */
 BOOL daPz_c::_createHeap() {
-    /* Nonmatching */
+    // lol
+    return !bodyCreateHeap() ? FALSE : (bowCreateHeap() ? TRUE : FALSE);
 }
 
 /* 00000EC0-00000F20       .text __ct__13daPz_matAnm_cFv */
@@ -166,7 +166,18 @@ void daPz_c::checkEyeArea(cXyz&) {
 
 /* 0000114C-00001194       .text getMsg__6daPz_cFv */
 u32 daPz_c::getMsg() {
-    /* Nonmatching */
+    u32 msg_no = 0x3562;
+    if (m08B0 == 0) {
+        msg_no = 0x3562;
+    } else if (m08B0 == 2) {
+        if (m0F65 == 0) {
+            m0F65 = 1;
+            msg_no = 0x3563;
+        } else {
+            msg_no = 0x3565;
+        }
+    }
+    return msg_no;
 }
 
 /* 00001194-00001208       .text next_msgStatus__6daPz_cFPUl */
@@ -390,8 +401,28 @@ void daPz_c::modeFollow() {
 }
 
 /* 000059B8-00005C58       .text modeProc__6daPz_cFQ26daPz_c6Proc_ei */
-void daPz_c::modeProc(daPz_c::Proc_e, int) {
-    /* Nonmatching */
+void daPz_c::modeProc(daPz_c::Proc_e i_procType, int i_modeNo) {
+    /* Nonmatching - .data offsets */
+    static ModeEntry mode_tbl[] = {
+        { &daPz_c::modeWaitInit,       &daPz_c::modeWait,       "WAIT"       },
+        { &daPz_c::modeMoveInit,       &daPz_c::modeMove,       "MOVE"       },
+        { &daPz_c::modeAttackWaitInit, &daPz_c::modeAttackWait, "ATTACKWAIT" },
+        { &daPz_c::modeAttackInit,     &daPz_c::modeAttack,     "ATTACK"     },
+        { &daPz_c::modeDefendInit,     &daPz_c::modeDefend,     "DEFEND"     },
+        { &daPz_c::modeDownInit,       &daPz_c::modeDown,       "DOWN"       },
+        { &daPz_c::modeAfraidInit,     &daPz_c::modeAfraid,     "AFRAID"     },
+        { &daPz_c::modeSideStepInit,   &daPz_c::modeSideStep,   "SIDE_STEP"  },
+        { &daPz_c::modeBackStepInit,   &daPz_c::modeBackStep,   "BACK_STEP"  },
+        { &daPz_c::modeTalkInit,       &daPz_c::modeTalk,       "TALK"       },
+        { &daPz_c::modeFollowInit,     &daPz_c::modeFollow,     "FOLLOW"     }
+    };
+
+    if (i_procType == PROC_INIT_e) {
+        mMode = i_modeNo;
+        (this->*mode_tbl[mMode].mInitFunc)();
+    } else if (i_procType == PROC_EXEC_e) {
+        (this->*mode_tbl[mMode].mUpdFunc)();
+    }
 }
 
 /* 00005C58-000060D8       .text _execute__6daPz_cFv */
@@ -469,16 +500,17 @@ void daPz_c::createInit() {
     m0F7C = l_HIO.field_0x0F8;
     m0F80 = 0;
     bodyCreateInit();
+
     if (mArg == 0) {
         mDrawBowFlag = 1;
-        modeProc((Proc_e)0, 1);
+        modeProcInit(1);
         attention_info.distances[fopAc_Attn_TYPE_TALK_e] = 3;
         attention_info.distances[fopAc_Attn_TYPE_SPEAK_e] = 3;
         cLib_onBit<u32>(attention_info.flags, fopAc_Attn_ACTION_SPEAK_e);
         cLib_onBit<u32>(attention_info.flags, fopAc_Attn_LOCKON_TALK_e);
     } else {
         attention_info.flags = fopAc_Attn_LOCKON_TALK_e | fopAc_Attn_ACTION_SPEAK_e;
-        modeProc((Proc_e)0, 0);
+        modeProcInit(0);
     }
 
     m0920 = 1;
