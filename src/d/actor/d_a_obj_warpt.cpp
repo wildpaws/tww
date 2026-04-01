@@ -191,7 +191,7 @@ bool daObj_Warpt_c::createHutaHeap() {
     J3DAnmTevRegKey* brk = (J3DAnmTevRegKey*)dComIfG_getObjectRes(m_arc_name, LTUBW_BRK_YWPFM00);
     JUT_ASSERT(291, brk);
 
-    if (!mLidBrk.init(modelData, brk, true, J3DFrameCtrl::EMode_LOOP, 1.0f, 0, -1, false, FALSE)) {
+    if (!mLidBrk.init(modelData, brk, true, J3DFrameCtrl::EMode_LOOP)) {
         return false;
     }
     return true;
@@ -370,13 +370,13 @@ void daObj_Warpt_c::breakHuta(int arg1) {
 
     switch (arg1) {
     case 0:
-        dComIfGp_particle_set(dPa_name::ID_SCENE_8165, &m830);
-        dComIfGp_particle_set(dPa_name::ID_SCENE_8166, &m830);
+        dComIfGp_particle_set(dPa_name::ID_AK_SN_WARPPOTFIRE00, &m830);
+        dComIfGp_particle_set(dPa_name::ID_AK_SN_WARPPOTFIRE01, &m830);
         break;
 
     case 1:
         fopAcM_seStart(this, JA_SE_OBJ_COL_BRK_WRAILING, 0);
-        dComIfGp_particle_set(dPa_name::ID_COMMON_03E5, &m830, NULL, NULL, 0xff, NULL, -1, &tevStr.mColorK0, &tevStr.mColorK0);
+        dComIfGp_particle_set(dPa_name::ID_IT_JN_TR_HAHEN_A, &m830, NULL, NULL, 0xff, NULL, -1, &tevStr.mColorK0, &tevStr.mColorK0);
 #if VERSION > VERSION_DEMO
         if (mpLidBgW != NULL && mpLidBgW->ChkUsed())
 #endif
@@ -437,7 +437,7 @@ void daObj_Warpt_c::checkHitSE() {
 /* 000010E0-00001178       .text modeOpenInit__13daObj_Warpt_cFv */
 void daObj_Warpt_c::modeOpenInit() {
     if (m844.getEmitter() == NULL) {
-        dComIfGp_particle_set(dPa_name::ID_SCENE_8161, &current.pos, NULL, NULL, 0xff, &m844, -1, &m86C, &m870);
+        dComIfGp_particle_set(dPa_name::ID_AK_SN_WARPPOTOPEN00, &current.pos, NULL, NULL, 0xff, &m844, -1, &m86C, &m870);
     }
     m858.remove();
 }
@@ -449,7 +449,7 @@ void daObj_Warpt_c::modeOpen() {
 
 /* 000011E8-00001258       .text modeCloseInit__13daObj_Warpt_cFv */
 void daObj_Warpt_c::modeCloseInit() {
-    dComIfGp_particle_set(dPa_name::ID_SCENE_8162, &current.pos, NULL, NULL, 0xff, &m858, -1, &m86C, &m870);
+    dComIfGp_particle_set(dPa_name::ID_AK_SN_WARPPOTCLOSE00, &current.pos, NULL, NULL, 0xff, &m858, -1, &m86C, &m870);
 }
 
 /* 00001258-00001388       .text modeClose__13daObj_Warpt_cFv */

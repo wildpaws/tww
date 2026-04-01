@@ -148,7 +148,7 @@ void naraku_check(ks_class* i_this) {
             local_18.setall(0.5f);
 
             i_this->m52C.remove();
-            dComIfGp_particle_setShipTail(dPa_name::ID_COMMON_0033, &i_this->current.pos, NULL, &local_18, 0xFF, &i_this->m52C);
+            dComIfGp_particle_setShipTail(dPa_name::ID_AK_JN_HAMON00, &i_this->current.pos, NULL, &local_18, 0xFF, &i_this->m52C);
             i_this->m52C.setRate(0.0f);
         }
 
@@ -292,7 +292,7 @@ BOOL body_atari_check(ks_class* i_this) {
                 }
                 
                 mParticleScale.setall(REG8_F(0) + 0.8f); 
-                dComIfGp_particle_set(dPa_name::ID_COMMON_NORMAL_HIT, &mTgHitPos, &player->shape_angle, &mParticleScale);     
+                dComIfGp_particle_set(dPa_name::ID_AK_JN_OK, &mTgHitPos, &player->shape_angle, &mParticleScale);     
                 
                 break;
             }
@@ -346,7 +346,7 @@ BOOL body_atari_check(ks_class* i_this) {
             }
             default: {
                 mParticleScale.setall(REG8_F(0) + 0.8f);
-                dComIfGp_particle_set(dPa_name::ID_COMMON_NORMAL_HIT, &mTgHitPos, &player->shape_angle, &mParticleScale);
+                dComIfGp_particle_set(dPa_name::ID_AK_JN_OK, &mTgHitPos, &player->shape_angle, &mParticleScale);
                 break;
             }
         }
@@ -671,7 +671,7 @@ void dead_eff_set(ks_class* i_this, cXyz* i_pos) {
     else {
         fopAcM_seStart(i_this, JA_SE_CM_KS_DIE, 0);
 
-        dComIfGp_particle_setSimple(dPa_name::ID_SCENE_8068, i_pos);
+        dComIfGp_particle_setSimple(dPa_name::ID_IT_SN_O_KUROBOU_SIBOU00, i_pos);
 
         gm_birth_delet(i_this);
     }
@@ -1398,7 +1398,7 @@ static BOOL useHeapInit(fopAc_ac_c* i_act) {
     if (i_this->mpBodyBrkAnm == NULL)
         return FALSE;
 
-    if (i_this->mpBodyBrkAnm->init(mpBodyModel->getModelData(), (J3DAnmTevRegKey *)dComIfG_getObjectRes("KS", KS_BRK_KS_BODY), TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, FALSE, 0) == 0)
+    if (i_this->mpBodyBrkAnm->init(mpBodyModel->getModelData(), (J3DAnmTevRegKey *)dComIfG_getObjectRes("KS", KS_BRK_KS_BODY), TRUE, J3DFrameCtrl::EMode_NONE) == 0)
         return FALSE;
 
     
@@ -1414,14 +1414,14 @@ static BOOL useHeapInit(fopAc_ac_c* i_act) {
     if (i_this->mpEyeBtkAnm == NULL)
         return FALSE;
 
-    if (i_this->mpEyeBtkAnm->init(mpEyeModel->getModelData(), (J3DAnmTextureSRTKey *)dComIfG_getObjectRes("KS", KS_BTK_KS_EYE), TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, FALSE, 0) == 0)
+    if (i_this->mpEyeBtkAnm->init(mpEyeModel->getModelData(), (J3DAnmTextureSRTKey *)dComIfG_getObjectRes("KS", KS_BTK_KS_EYE), TRUE, J3DFrameCtrl::EMode_NONE) == 0)
         return FALSE;
     
     i_this->mpEyeBrkAnm = new mDoExt_brkAnm();
     if (i_this->mpEyeBrkAnm == NULL)
         return FALSE;
 
-    if (i_this->mpEyeBrkAnm->init(mpEyeModel->getModelData(), (J3DAnmTevRegKey *)dComIfG_getObjectRes("KS", KS_BRK_KS_EYE), TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, FALSE, 0) == 0) {
+    if (i_this->mpEyeBrkAnm->init(mpEyeModel->getModelData(), (J3DAnmTevRegKey *)dComIfG_getObjectRes("KS", KS_BRK_KS_EYE), TRUE, J3DFrameCtrl::EMode_NONE) == 0) {
         return FALSE;
     }
     return TRUE; 

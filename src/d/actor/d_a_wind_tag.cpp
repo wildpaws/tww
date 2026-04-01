@@ -77,17 +77,17 @@ BOOL daWindTag::daWindTag_c::CreateHeap() {
 
     J3DAnmTextureSRTKey* pbtk = (J3DAnmTextureSRTKey*)dComIfG_getObjectRes(m_arcname[mType], m_btkidx[mType]);
     JUT_ASSERT(0x17A, pbtk != NULL);
-    if (!mBtkAnm0.init(modelData, pbtk, TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, false, 0))
+    if (!mBtkAnm0.init(modelData, pbtk, TRUE, J3DFrameCtrl::EMode_NONE))
         return FALSE;
 
     pbtk = (J3DAnmTextureSRTKey*)dComIfG_getObjectRes(m_arcname[mType], m_btkidx2[mType]);
     JUT_ASSERT(0x17A, pbtk != NULL);
-    if (!mBtkAnm1.init(modelData, pbtk, TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, false, 0))
+    if (!mBtkAnm1.init(modelData, pbtk, TRUE, J3DFrameCtrl::EMode_NONE))
         return FALSE;
 
     J3DAnmTransform* pbck = (J3DAnmTransform*)dComIfG_getObjectRes(m_arcname[mType], m_bckidx[mType]);
     JUT_ASSERT(0x192, pbck != NULL);
-    if (!mBckAnm.init(modelData, pbck, TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, false))
+    if (!mBckAnm.init(modelData, pbck, TRUE, J3DFrameCtrl::EMode_NONE))
         return FALSE;
 
     return TRUE;
@@ -166,7 +166,7 @@ void daWindTag::daWindTag_c::CreateInit() {
         mEfColor.g = mEfTevStr.mColorC0.g;
         mEfColor.b = mEfTevStr.mColorC0.b;
         mEfColor.a = mEfTevStr.mColorC0.a;
-        mpEmitter = dComIfGp_particle_set(dPa_name::ID_SCENE_8290, &current.pos, NULL, &scale, 0xFF, NULL, fopAcM_GetRoomNo(this), &mEfColor);
+        mpEmitter = dComIfGp_particle_set(dPa_name::ID_AK_SN_AIRFLOWSPLASH00, &current.pos, NULL, &scale, 0xFF, NULL, fopAcM_GetRoomNo(this), &mEfColor);
         if (mpEmitter != NULL)
             mpEmitter->setGlobalScale(efScale);
     }

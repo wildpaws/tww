@@ -79,7 +79,7 @@ static BOOL daKN_Draw(kn_class* i_this) {
 void anm_init(kn_class* i_this, int anmResIdx, float morf, unsigned char loopMode, float speed, int soundResIdx) {
     if (soundResIdx >= 0) {
         i_this->mpMorf->setAnm(
-            (J3DAnmTransform*)dComIfG_getObjectRes("KN", anmResIdx), loopMode, morf, speed, 0.0f, -1.0f, (void*)dComIfG_getObjectRes("KN", soundResIdx)
+            (J3DAnmTransform*)dComIfG_getObjectRes("KN", anmResIdx), loopMode, morf, speed, 0.0f, -1.0f, dComIfG_getObjectRes("KN", soundResIdx)
         );
     } else {
         i_this->mpMorf->setAnm((J3DAnmTransform*)dComIfG_getObjectRes("KN", anmResIdx), loopMode, morf, speed, 0.0f, -1.0f, NULL);
@@ -112,7 +112,7 @@ void shibuki_set(kn_class* i_this) {
     JGeometry::TVec3<f32> s;
     s.set(fVar1, fVar1, fVar1);
 
-    JPABaseEmitter* pJVar2 = dComIfGp_particle_set(dPa_name::ID_COMMON_0023, &i_this->actor.current.pos);
+    JPABaseEmitter* pJVar2 = dComIfGp_particle_set(dPa_name::ID_AK_JN_ELEMENTSHIBUKI00, &i_this->actor.current.pos);
     if (pJVar2 != NULL) {
         pJVar2->setRate(1.5f);
         pJVar2->setSpread(1.0f);
