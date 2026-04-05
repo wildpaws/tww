@@ -11,15 +11,14 @@
 class daPz_matAnm_c : public J3DMaterialAnm {
 public:
     void clrMoveFlag() {}
-    void getNowOffsetX() {}
-    void getNowOffsetY() {}
+    f32* getNowOffsetX() { return &field_0x6C.x; }
+    f32* getNowOffsetY() { return &field_0x6C.y; }
     void setMoveFlag() {}
 
     daPz_matAnm_c();
     void calc(J3DMaterial*) const;
 public:
-    /* 0x6C */ f32 field_0x6C;
-    /* 0x70 */ f32 field_0x70;
+    /* 0x6C */ cXy field_0x6C;
     /* 0x74 */ u8 field_0x74[0x7C - 0x74];
     /* 0x7C */ u8 field_0x7C;
     /* 0x7D */ u8 field_0x7D[0x80 - 0x7D];
@@ -72,7 +71,7 @@ public:
     BOOL bowCreateHeap();
     BOOL _createHeap();
     void getGndPos();
-    void checkEyeArea(cXyz&);
+    bool checkEyeArea(cXyz&);
     virtual u32 getMsg();
     virtual u16 next_msgStatus(u32*);
     virtual void anmAtr(u16);
@@ -82,7 +81,7 @@ public:
     void setHeadSplash();
     void setRipple();
     void setJntStatus();
-    void demo();
+    bool demo();
     void checkTgHit();
     void getArg();
     void setAttention();
@@ -143,7 +142,9 @@ public:
     /* 0x06E0 */ dPa_rippleEcallBack m06E0;
     /* 0x06F4 */ dPa_followEcallBack m06F4;
     /* 0x0708 */ dPa_followEcallBack m0708;
-    /* 0x071C */ u8 m071C[0x073E - 0x071C];
+    /* 0x071C */ u8 m071C[0x072C - 0x071C];
+    /* 0x072C */ cXyz m072C;
+    /* 0x0738 */ u8 m0738[0x073E - 0x0738];
     /* 0x073E */ u8 mbEyesFollowGanondorf;
     /* 0x073F */ u8 m073F;
     /* 0x0740 */ u8 m0740[0x0758 - 0x0740];
@@ -162,18 +163,21 @@ public:
     /* 0x08AC */ u8 m08AC[0x08B0 - 0x08AC];
     /* 0x08B0 */ int m08B0;
     /* 0x08B4 */ int m08B4;
-    /* 0x08B8 */ u8 m08B8[0x08C4 - 0x08B8];
+    /* 0x08B8 */ cXyz m08B8;
     /* 0x08C4 */ cXyz mEyePos;
-    /* 0x08D0 */ u8 m08D0[0x08EC - 0x08D0];
+    /* 0x08D0 */ u8 m08D0[0x08DC - 0x08D0];
+    /* 0x08DC */ cXyz m08DC;
+    /* 0x08E8 */ u8 m08E8[0x08EC - 0x08E8];
     /* 0x08EC */ int mModeTimer;
     /* 0x08F0 */ u8 m08F0[0x08F4 - 0x08F0];
     /* 0x08F4 */ int m08F4;
     /* 0x08F8 */ u8 m08F8[0x0920 - 0x08F8];
     /* 0x0920 */ int m0920;
-    /* 0x0924 */ int m0924;
+    /* 0x0924 */ f32 m0924;
     /* 0x0928 */ enemyice mEventIce;
     /* 0x0CE0 */ enemyfire mEnemyFire;
-    /* 0x0F08 */ u8 m0F08[0x0F44 - 0x0F08];
+    /* 0x0F08 */ Mtx m0F08;
+    /* 0x0F38 */ cXyz m0F38;
     /* 0x0F44 */ f32 m0F44;
     /* 0x0F48 */ u8 m0F48;
     /* 0x0F49 */ u8 m0F49[0x0F4C - 0x0F49];
@@ -184,7 +188,9 @@ public:
     /* 0x0F66 */ u8 mDemoFlag;
     /* 0x0F67 */ u8 m0F67[0x0F70 - 0x0F67];
     /* 0x0F70 */ f32 m0F70;
-    /* 0x0F74 */ u8 m0F74[0x0F7C - 0x0F74];
+    /* 0x0F74 */ u8 m0F74[0x0F78 - 0x0F74];
+    /* 0x0F78 */ s16 m0F78;
+    /* 0x0F7A */ s16 m0F7A;
     /* 0x0F7C */ int m0F7C;
     /* 0x0F80 */ u8 m0F80;
     /* 0x0F81 */ u8 m0F81[0x0F82 - 0x0F81];
@@ -284,9 +290,7 @@ public:
     /* 0x0FA */ u8 field_0x0FA[0x0FC - 0x0FA];
     /* 0x0FC */ s16 field_0x0FC;
     /* 0x0FE */ u8 field_0x0FE[0x100 - 0x0FE];
-    /* 0x100 */ f32 field_0x100;
-    /* 0x104 */ f32 field_0x104;
-    /* 0x108 */ f32 field_0x108;
+    /* 0x100 */ f32 field_0x100[3];
 };  // Size: 0x10C
 
 #endif /* D_A_PZ_H */

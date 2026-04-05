@@ -5,13 +5,16 @@
 
 #include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_pz.h"
+#include "d/actor/d_a_gnd.h"
+#include "d/actor/d_a_item.h"
 #include "d/d_material.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
+#include "d/d_s_play.h"
 #include "d/d_snap.h"
 
-const u32 daPz_c::m_heapsize = 0xA740;
+const u32 daPz_c::m_heapsize = 42816;
 const char daPz_c::m_arc_name[] = "PZ";
 const dCcD_SrcCyl daPz_c::m_cyl_src = {
     // dCcD_SrcGObjInf
@@ -47,12 +50,95 @@ static daPz_HIO_c l_HIO;
 
 /* 000000EC-00000310       .text __ct__10daPz_HIO_cFv */
 daPz_HIO_c::daPz_HIO_c() {
-    /* Nonmatching */
+    /* Apparent match */
+    field_0x02C = 0;
+    field_0x02D = 1;
+    field_0x032 = 0;
+    field_0x033 = 0;
+
+    for (int i = 0; i < 10; i++) {
+        field_0x034[i] = 0;
+    }
+
+    field_0x004.m04 = -20.0;
+    field_0x004.mMaxHeadX = 0x1FFE;
+    field_0x004.mMaxHeadY = 10000;
+    field_0x004.mMaxBackboneX = 7000;
+    field_0x004.mMaxBackboneY = 13000;
+    field_0x004.mMinHeadX = -0x9C4;
+    field_0x004.mMinHeadY = -10000;
+    field_0x004.mMinBackboneX = -7000;
+    field_0x004.mMinBackboneY = -13000;
+    field_0x004.mMaxTurnStep = 0x1000;
+    field_0x004.mMaxHeadTurnVel = 0x800;
+    field_0x004.mAttnYOffset = 50.0;
+    field_0x004.mMaxAttnAngleY = 13000;
+    field_0x004.m22 = 0;
+    field_0x004.mMaxAttnDistXZ = 400.0;
+
+    field_0x040 = 60.0;
+    field_0x02F = 0;
+    field_0x054 = 0x2000;
+    field_0x058 = 200.0;
+    field_0x044 = 1.2;
+    field_0x04C = 0.9;
+    field_0x048 = 2.0;
+    field_0x050 = 10.0;
+    field_0x031 = 0;
+    field_0x05C = 100.0;
+    field_0x068 = 0.0;
+    field_0x074 = 100.0;
+    field_0x080 = 0x1E;
+    field_0x086 = 300;
+    field_0x08C = 0;
+    field_0x092 = 0x1E;
+    field_0x098 = 0;
+    field_0x0A0 = 1000.0;
+    field_0x0F8 = 0x3c;
+    field_0x100[0] = 3000.0;
+    field_0x064 = 100.0;
+    field_0x070 = 100.0;
+    field_0x07C = 80.0;
+    field_0x084 = 0x1E;
+    field_0x08A = 100;
+    field_0x090 = 100;
+    field_0x096 = 0x1E;
+    field_0x09C = 0x3C;
+    field_0x0A8 = 1000.0;
+    field_0x0FC = 600;
+    field_0x100[2] = 800.0;
+    field_0x0AC = 100.0;
+    field_0x0E2 = 4;
+    field_0x0E4 = 6;
+    field_0x0E6 = 4;
+    field_0x0E8 = 6;
+    field_0x0B0 = -2.5;
+    field_0x0B4 = 20.0;
+    field_0x0B8 = 20.0;
+    field_0x0BC = 20.0;
+    field_0x0C0 = 20.0;
+    field_0x0C4 = 4.0;
+    field_0x0C8 = 15.0;
+    field_0x0CC = 0xE;
+    field_0x0D8 = 30.0;
+    field_0x0DC = 0x28;
+    field_0x0DE = 0x28;
+    field_0x0E0 = 5;
+    field_0x0D0 = 600.0;
+    field_0x0EC = 800.0;
+    field_0x0D4 = 15.0;
+    field_0x0F0 = 2.0;
+    field_0x0F4 = 1.0;
 }
 
 /* 00000310-00000340       .text stealItem_CB__FPv */
-static void stealItem_CB(void*) {
-    /* Nonmatching */
+static BOOL stealItem_CB(void* actor) {
+    if (actor != NULL) {
+        daItem_c* item = (daItem_c *) actor;
+        item->scale.setall(1.0f);
+        item->setFlag(daItem_c::FLAG_HOOK);
+    }
+    return TRUE;
 }
 
 /* 00000340-0000038C       .text nodeHeadControl_CB__FP7J3DNodei */
@@ -68,8 +154,23 @@ static BOOL nodeHeadControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
 }
 
 /* 0000038C-000004FC       .text _nodeHeadControl__6daPz_cFP7J3DNodeP8J3DModel */
-void daPz_c::_nodeHeadControl(J3DNode*, J3DModel*) {
+void daPz_c::_nodeHeadControl(J3DNode* i_nodeP, J3DModel* i_modelP) {
     /* Nonmatching */
+    u16 jnt_no = ((J3DJoint *)i_nodeP)->getJntNo();
+    
+    mDoMtx_stack_c::copy(i_modelP->getAnmMtx(jnt_no));
+
+    static cXyz l_offsetAttPos(0.0f, 0.0f, 0.0f);
+    static cXyz l_offsetEyePos(24.0f, -16.0f, 0.0f);
+
+    mDoMtx_stack_c::multVec(&l_offsetAttPos, &m08B8);
+    mDoMtx_stack_c::YrotM(-m_jnt.getHead_y());
+    mDoMtx_stack_c::ZrotM(-m_jnt.getHead_x());
+    mDoMtx_stack_c::multVec(&l_offsetEyePos, &m08DC);
+    mDoMtx_stack_c::multVecZero(&m072C);
+
+    cMtx_copy(mDoMtx_stack_c::get(), J3DSys::mCurrentMtx);
+    i_modelP->setAnmMtx(jnt_no, mDoMtx_stack_c::get());
 }
 
 /* 00000538-00000584       .text nodeWaistControl_CB__FP7J3DNodei */
@@ -85,8 +186,36 @@ static BOOL nodeWaistControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
 }
 
 /* 00000584-00000710       .text _nodeWaistControl__6daPz_cFP7J3DNodeP8J3DModel */
-void daPz_c::_nodeWaistControl(J3DNode*, J3DModel*) {
-    /* Nonmatching */
+void daPz_c::_nodeWaistControl(J3DNode* i_nodeP, J3DModel* i_modelP) {
+    /* Apparent match */
+    static s16 tmp_angle;
+    u16 jnt_no = ((J3DJoint *)i_nodeP)->getJntNo();
+    tmp_angle += 0x1000;
+
+    mDoMtx_stack_c::copy(i_modelP->getAnmMtx(jnt_no));
+
+    if ((s8)mAnmType == 4 || (s8)mAnmType == 5 || (s8)mAnmType == 6) {
+        mDoMtx_stack_c::ZrotM(0xDAC);
+        mDoMtx_stack_c::YrotM(0x5DC);
+    }
+
+    if (REG12_S(6) != 0) {
+        mDoMtx_stack_c::XrotM(tmp_angle);
+    } else {
+        mDoMtx_stack_c::XrotM(+m_jnt.getBackbone_y());
+        mDoMtx_stack_c::ZrotM(-m_jnt.getBackbone_x());
+    }
+
+    if ((s8)mAnmType == 4 || (s8)mAnmType == 5 || (s8)mAnmType == 6) {
+        mDoMtx_stack_c::YrotM(-0x5DC);
+        mDoMtx_stack_c::ZrotM(-0xDAC);
+    }
+
+    cMtx_copy(mDoMtx_stack_c::get(), m0F08);
+    mDoMtx_stack_c::multVecZero(&m0F38);
+    
+    cMtx_copy(mDoMtx_stack_c::get(), J3DSys::mCurrentMtx);
+    i_modelP->setAnmMtx(jnt_no, mDoMtx_stack_c::get());
 }
 
 /* 00000710-0000075C       .text nodeWaist2Control_CB__FP7J3DNodei */
@@ -102,8 +231,15 @@ static BOOL nodeWaist2Control_CB(J3DNode* i_nodeP, int i_calcTiming) {
 }
 
 /* 0000075C-000007F4       .text _nodeWaist2Control__6daPz_cFP7J3DNodeP8J3DModel */
-void daPz_c::_nodeWaist2Control(J3DNode*, J3DModel*) {
-    /* Nonmatching */
+void daPz_c::_nodeWaist2Control(J3DNode* i_nodeP, J3DModel* i_modelP) {
+    u16 jnt_no = ((J3DJoint *)i_nodeP)->getJntNo();
+    
+    mDoMtx_stack_c::copy(i_modelP->getAnmMtx(jnt_no));
+    mDoMtx_stack_c::YrotM(m0F7A);
+    mDoMtx_stack_c::ZrotM(m0F78);
+    
+    cMtx_copy(mDoMtx_stack_c::get(), J3DSys::mCurrentMtx);
+    i_modelP->setAnmMtx(jnt_no, mDoMtx_stack_c::get());
 }
 
 /* 000007F4-00000840       .text nodeSkirtControl_CB__FP7J3DNodei */
@@ -119,8 +255,17 @@ static BOOL nodeSkirtControl_CB(J3DNode* i_nodeP, int i_calcTiming) {
 }
 
 /* 00000840-00000920       .text _nodeSkirtControl__6daPz_cFP7J3DNodeP8J3DModel */
-void daPz_c::_nodeSkirtControl(J3DNode*, J3DModel*) {
-    /* Nonmatching */
+void daPz_c::_nodeSkirtControl(J3DNode* i_nodeP, J3DModel* i_modelP) {
+    u16 jnt_no = ((J3DJoint *)i_nodeP)->getJntNo();
+    
+    mDoMtx_stack_c::copy(i_modelP->getAnmMtx(jnt_no));
+    s16 temp = m0F78 > m0F7A ? m0F7A : m0F78;
+    mDoMtx_stack_c::XrotM(REG12_S(2));
+    mDoMtx_stack_c::YrotM(REG12_S(3));
+    mDoMtx_stack_c::ZrotM(-(temp + REG12_S(4)));
+    
+    cMtx_copy(mDoMtx_stack_c::get(), J3DSys::mCurrentMtx);
+    i_modelP->setAnmMtx(jnt_no, mDoMtx_stack_c::get());
 }
 
 /* 00000920-00000940       .text createHeap_CB__FP10fopAc_ac_c */
@@ -198,7 +343,25 @@ BOOL daPz_c::bodyCreateHeap() {
 
 /* 00000D54-00000E74       .text bowCreateHeap__6daPz_cFv */
 BOOL daPz_c::bowCreateHeap() {
-    /* Nonmatching */
+    /* Apparent match */
+    J3DModelData* modelData = static_cast<J3DModelData *>(dComIfG_getObjectRes(m_arc_name, 0x17));
+    JUT_ASSERT(0x29F, modelData != NULL);
+
+    mpBowMcaMorf = new mDoExt_McaMorf(
+        modelData,
+        NULL, NULL, NULL, 
+        J3DFrameCtrl::EMode_NULL, 1.0f, 
+        0, -1, true, NULL, 
+        0x80000, 0x11000022
+    );
+
+    if (!mpBowMcaMorf || !mpBowMcaMorf->getModel()) {
+        return FALSE;
+    }
+
+    mpBowMcaMorf->getModel()->setUserArea((u32) this);
+
+    return TRUE;
 }
 
 /* 00000E74-00000EC0       .text _createHeap__6daPz_cFv */
@@ -211,13 +374,22 @@ BOOL daPz_c::_createHeap() {
 daPz_matAnm_c::daPz_matAnm_c() {
     /* Apparent match */
     field_0x7C = 0;
-    field_0x6C = 0.0f;
-    field_0x70 = 0.0f;
+    field_0x6C.x = 0.0f;
+    field_0x6C.y = 0.0f;
 }
 
 /* 00000F20-00000FB4       .text calc__13daPz_matAnm_cCFP11J3DMaterial */
-void daPz_matAnm_c::calc(J3DMaterial*) const {
-    /* Nonmatching */
+void daPz_matAnm_c::calc(J3DMaterial* i_matP) const {
+    J3DMaterialAnm::calc(i_matP);
+    for (u32 i = 0; i < 8; i++) {
+        if (getTexMtxAnm(i)) {
+            J3DTexMtx* tex_mtx = i_matP->getTexMtx(i);
+            if (field_0x7C != 0) {
+                tex_mtx->getTextureSRT().mTranslationX = field_0x6C.x;
+                tex_mtx->getTextureSRT().mTranslationY = field_0x6C.y;
+            }
+        }
+    }
 }
 
 /* 00000FB4-00001038       .text getGndPos__6daPz_cFv */
@@ -226,7 +398,7 @@ void daPz_c::getGndPos() {
 }
 
 /* 00001038-0000114C       .text checkEyeArea__6daPz_cFR4cXyz */
-void daPz_c::checkEyeArea(cXyz&) {
+bool daPz_c::checkEyeArea(cXyz&) {
     /* Nonmatching */
 }
 
@@ -287,7 +459,7 @@ void daPz_c::setJntStatus() {
 }
 
 /* 0000175C-00001954       .text demo__6daPz_cFv */
-void daPz_c::demo() {
+bool daPz_c::demo() {
     /* Nonmatching */
 }
 
@@ -493,7 +665,112 @@ void daPz_c::modeProc(daPz_c::Proc_e i_procType, int i_modeNo) {
 
 /* 00005C58-000060D8       .text _execute__6daPz_cFv */
 bool daPz_c::_execute() {
-    /* Nonmatching */
+    /* Apparent match */
+    if (l_HIO.field_0x033 != 0) {
+        modeProcInit(MODE_WAIT);
+        fopAc_ac_c* link_p = dComIfGp_getLinkPlayer();
+        current.pos = link_p->current.pos;
+        
+        current.pos.y += 50.0f;
+        current.pos.x -= cM_ssin(link_p->shape_angle.y) * 200.0f;
+        current.pos.z -= cM_scos(link_p->shape_angle.y) * 200.0f;
+    }
+
+    setFallSplash();
+    getGndPos();
+    
+    mbEyesFollowGanondorf = 0;
+    if(mbHasGanondorf != 0) {
+        mbEyesFollowGanondorf = checkEyeArea(mGanondorfPosCurrent);
+    }
+
+    gravity = l_HIO.field_0x0B0;
+    if (mMode != MODE_AFRAID && mMode != MODE_DOWN && m073F != 0) {
+        modeProcInit(MODE_AFRAID);
+    }
+    
+    setRipple();
+
+    if (mMode != MODE_DOWN && m08B0 == 1) {
+        modeProcInit(MODE_DOWN);
+    }
+
+    setJntStatus();
+
+    if (demo()) {
+        mBtkAnm.play();
+        mBrkAnm.play();
+        setMtx();
+        g_env_light.settingTevStruct(TEV_TYPE_ACTOR, &current.pos, &tevStr);
+        return true;
+    }
+
+    current.angle = shape_angle;
+    mpMorf->calc();
+    enemy_fire(&mEnemyFire);
+    BOOL ice_result = enemy_ice(&mEventIce);
+
+    if (ice_result) {
+        mpMorf->getModel()->setBaseTRMtx(mDoMtx_stack_c::get());
+        return true;
+    }
+
+    // TODO: fix this cast
+    if ((s32)mAnmType == 9) {
+        setHeadSplash();
+    }
+
+    if (mArg == 0 && (m08B0 == 0 || m08B0 == 2) && m0F80 == 0) {
+        if (mMode != MODE_ATTACKWAIT && mMode != MODE_ATTACK && mMode != MODE_DOWN && mMode != MODE_TALK) {
+            if (cLib_calcTimer(&m0F7C) == 0) {
+                fopAc_ac_c* actor_proc;
+                if (fopAcM_SearchByName(PROC_GND, &actor_proc) != 0) {
+                    gnd_class* ganondorf_p = (gnd_class *) actor_proc;
+                    if (
+                        fopAcM_searchActorDistanceXZ(this, dComIfGp_getPlayer(0)) < l_HIO.field_0x100[m08B0] &&
+                        ganondorf_p->mMoveType == 0 // move0
+                    ) {
+                        m0F82 = 1;
+                        modeProcInit(MODE_TALK);
+                    }
+                }
+            }
+        }
+    }
+
+    checkOrder();
+    modeProc(PROC_EXEC_e, MODE_NULL);
+    eventOrder();
+    setAttention();
+
+    cLib_addCalc2(&speedF, m0924, 0.3f, 4.0f);
+
+    s8 room_no = fopAcM_GetRoomNo(this);
+    u32 snd_id = mObjAcch.ChkGroundHit() ? dComIfG_Bgsp()->GetMtrlSndId(mObjAcch.m_gnd) : 0;
+    
+    mpMorf->play(&eyePos, snd_id, dComIfGp_getReverb(room_no));
+    mpBowMcaMorf->play(NULL, 0, 0);
+    mBrkAnm.play();
+    playEyeAnm();
+
+    if (l_HIO.field_0x02F != 0) {
+        setAnm(l_HIO.field_0x02F, false, 0xF);
+    }
+
+    fopAcM_posMoveF(this, NULL);
+    mObjAcch.CrrPos(*dComIfG_Bgsp());
+
+    if (!dComIfGp_event_runCheck()) {
+        setCollision(30.0f, 130.0f);
+    }
+
+    setAnmRunSpeed();
+    current.angle = shape_angle;
+    setMtx();
+
+    g_env_light.settingTevStruct(TEV_TYPE_ACTOR, &current.pos, &tevStr);
+
+    return true;
 }
 
 /* 000060D8-00006154       .text bowDraw__6daPz_cFv */
