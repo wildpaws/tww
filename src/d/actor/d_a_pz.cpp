@@ -130,7 +130,70 @@ static BOOL createHeap_CB(fopAc_ac_c* i_this) {
 
 /* 00000940-00000D54       .text bodyCreateHeap__6daPz_cFv */
 BOOL daPz_c::bodyCreateHeap() {
-    /* Nonmatching */
+    /* Apparent match */
+    J3DModelData* modelData = static_cast<J3DModelData *>(dComIfG_getObjectRes(m_arc_name, 0x18));
+    JUT_ASSERT(0x23E, modelData != NULL);
+
+    for (u16 i = 0; i < modelData->getMaterialNum(); i++) {
+        J3DMaterial* material_p = modelData->getMaterialNodePointer(i); 
+        material_p->setMaterialAnm(new daPz_matAnm_c());
+    }
+
+    mpMorf = new mDoExt_McaMorf(
+        modelData, 
+        NULL, NULL, NULL, 
+        J3DFrameCtrl::EMode_NULL, 1.0f, 
+        0, -1, true, NULL, 
+        0x80000, 0x11020222
+    );
+
+    if (!mpMorf || !mpMorf->getModel()) {
+        return FALSE;
+    }
+
+    mpMorf->getModel()->setUserArea((u32) this);
+
+    if (!mInvisibleModel.create(mpMorf->getModel())) {
+        return FALSE;
+    }
+
+    m_jnt.setHeadJntNum(4);
+    modelData->getJointTree().getJointNodePointer(4)->setCallBack(nodeHeadControl_CB);
+    m_jnt.setBackboneJntNum(1);
+    modelData->getJointTree().getJointNodePointer(1)->setCallBack(nodeWaistControl_CB);
+    modelData->getJointTree().getJointNodePointer(21)->setCallBack(nodeWaist2Control_CB);
+    modelData->getJointTree().getJointNodePointer(25)->setCallBack(nodeSkirtControl_CB);
+
+    J3DAnmTexPattern* btp = static_cast<J3DAnmTexPattern *>(dComIfG_getObjectRes(m_arc_name, 0x27));
+    JUT_ASSERT(0x277, btp != NULL);
+
+    if (!mBtpAnm.init(modelData, btp, TRUE, 0)) {
+        return FALSE;
+    }
+
+    J3DAnmTextureSRTKey* btk = static_cast<J3DAnmTextureSRTKey *>(dComIfG_getObjectRes(m_arc_name, 0x1F));
+    JUT_ASSERT(0x27D, btk != NULL);
+
+    if (!mBtkAnm.init(modelData, btk, TRUE, 0)) {
+        return FALSE;
+    }
+
+    u16 update_mat_num = mBtkAnm.getBtkAnm()->getUpdateMaterialNum();
+    for (u16 i = 0; i < update_mat_num; i++) {
+        J3DMaterialAnm* material_p = modelData
+            ->getMaterialNodePointer(mBtkAnm.getBtkAnm()->getUpdateMaterialID(i))
+            ->getMaterialAnm();
+        m08A8[i] = material_p;
+    }
+
+    J3DAnmTevRegKey* brk = static_cast<J3DAnmTevRegKey *>(dComIfG_getObjectRes(m_arc_name, 0x1B));
+    JUT_ASSERT(0x28E, brk != NULL);
+
+    if (!mBrkAnm.init(modelData, brk, TRUE, 2)) {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 /* 00000D54-00000E74       .text bowCreateHeap__6daPz_cFv */
@@ -146,7 +209,10 @@ BOOL daPz_c::_createHeap() {
 
 /* 00000EC0-00000F20       .text __ct__13daPz_matAnm_cFv */
 daPz_matAnm_c::daPz_matAnm_c() {
-    /* Nonmatching */
+    /* Apparent match */
+    field_0x7C = 0;
+    field_0x6C = 0.0f;
+    field_0x70 = 0.0f;
 }
 
 /* 00000F20-00000FB4       .text calc__13daPz_matAnm_cCFP11J3DMaterial */

@@ -9,6 +9,7 @@
 #include "m_Do/m_Do_hostIO.h"
 
 class daPz_matAnm_c : public J3DMaterialAnm {
+public:
     void clrMoveFlag() {}
     void getNowOffsetX() {}
     void getNowOffsetY() {}
@@ -16,7 +17,13 @@ class daPz_matAnm_c : public J3DMaterialAnm {
 
     daPz_matAnm_c();
     void calc(J3DMaterial*) const;
-};
+public:
+    /* 0x6C */ f32 field_0x6C;
+    /* 0x70 */ f32 field_0x70;
+    /* 0x74 */ u8 field_0x74[0x7C - 0x74];
+    /* 0x7C */ u8 field_0x7C;
+    /* 0x7D */ u8 field_0x7D[0x80 - 0x7D];
+};  // Size: 0x80
 
 class daPz_c : public fopNpc_npc_c {
     /* Constructor nonmatching */
@@ -27,7 +34,18 @@ public:
     };
 
     enum Mode_e {
-
+        MODE_WAIT       = 0,
+        MODE_MOVE       = 1,
+        MODE_ATTACKWAIT = 2,       
+        MODE_ATTACK     = 3,   
+        MODE_DEFEND     = 4,        
+        MODE_DOWN       = 5,       
+        MODE_AFRAID     = 6,         
+        MODE_SIDE_STEP  = 7,       
+        MODE_BACK_STEP  = 8,      
+        MODE_TALK       = 9,
+        MODE_FOLLOW     = 10,
+        MODE_NULL          
     };
 
     struct ModeEntry {
@@ -114,7 +132,7 @@ public:
     static const u32 m_heapsize;
     static const char m_arc_name[];
     static const dCcD_SrcCyl m_cyl_src;
-
+    
 public:
     /* 0x06C4 */ int mMode;
     /* 0x06C8 */ u8 m06C8[0x06D3 - 0x06C8];
